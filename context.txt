@@ -1,0 +1,10 @@
+# Project Context: Personal Finance & Ledger App
+
+## Features Status
+- **Frontend Setup**: [Completed] Zero-dependency Vanilla JS/CSS/HTML app.
+- **Frontend UI Design**: [Completed] Premium light theme with glassmorphism.
+- **Backend Setup**: [Completed] Node.js, Express, Prisma ORM structure created.
+- **Backend Database**: [Completed] PostgreSQL schema defined for Users, Transactions, and Ledger.
+- **Backend API - Auth**: [Completed] Registration and Login endpoints with JWT.
+- **Backend API - Transactions**: [Completed] Endpoints for income/expenses and 60/40 rule summary.
+- **Backend API - Ledger**: [Completed] Endpoints to record borrowing/lending and calculate net balances.

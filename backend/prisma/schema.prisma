@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  passwordHash String
+  name         String?
+  transactions Transaction[]
+  ledger       LedgerEntry[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Transaction {
+  id              String   @id @default(uuid())
+  type            String   // "INCOME" or "EXPENSE"
+  amount          Float
+  category        String
+  description     String?
+  transactionDate DateTime @default(now())
+  createdAt       DateTime @default(now())
+
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, transactionDate])
+}
+
+model LedgerEntry {
+  id           String   @id @default(uuid())
+  contactName  String
+  contactPhone String?
+  type         String   // "GAVE" or "GOT"
+  amount       Float
+  status       String   @default("PENDING") // "PENDING" or "SETTLED"
+  dueDate      DateTime?
+  createdAt    DateTime @default(now())
+
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, contactName])
+}

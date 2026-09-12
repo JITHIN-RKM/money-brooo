@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ledger - Personal Finance Tracker</title>
+    <meta name="description" content="A simple personal finance tracker and ledger.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">L</div>
+                <h1>Ledger</h1>
+            </div>
+            <ul class="nav-links">
+                <li class="active" data-target="dashboard">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Dashboard
+                </li>
+                <li data-target="ledger">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    Borrow/Lend
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Dashboard View -->
+            <section id="dashboard" class="view active-view">
+                <header class="view-header">
+                    <h2>Dashboard</h2>
+                    <p class="subtitle">Welcome back! Here is your financial overview.</p>
+                </header>
+
+                <div class="summary-cards">
+                    <div class="card glass-card balance-card">
+                        <h3>Total Balance</h3>
+                        <h1 id="total-balance">₹0.00</h1>
+                    </div>
+                    <div class="card glass-card income-card">
+                        <h3>Total Income</h3>
+                        <h2 id="total-income" class="text-green">₹0.00</h2>
+                    </div>
+                    <div class="card glass-card expense-card">
+                        <h3>Total Expenses</h3>
+                        <h2 id="total-expense" class="text-red">₹0.00</h2>
+                    </div>
+                </div>
+
+                <!-- Dedicated Income Section -->
+                <div class="card glass-card income-entry-section">
+                    <div class="section-title-wrap">
+                        <div class="section-icon income-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                        </div>
+                        <div>
+                            <h3>Add Income</h3>
+                            <p class="section-desc">Record your earnings to calculate your 60/40 spending limits & savings.</p>
+                        </div>
+                    </div>
+                    <form id="income-form" class="income-form-grid">
+                        <div class="input-group">
+                            <label for="income-amount">Amount (₹)</label>
+                            <input type="number" id="income-amount" min="1" step="0.01" required placeholder="e.g. 50000">
+                        </div>
+                        <div class="input-group">
+                            <label for="income-source">Income Source / Category</label>
+                            <input type="text" id="income-source" list="income-suggestions" required placeholder="e.g. Salary, Freelance">
+                            <datalist id="income-suggestions">
+                                <option value="Salary"></option>
+                                <option value="Freelance"></option>
+                                <option value="Business"></option>
+                                <option value="Investment / Dividends"></option>
+                                <option value="Bonus"></option>
+                                <option value="Rental Income"></option>
+                                <option value="Other"></option>
+                            </datalist>
+                        </div>
+                        <div class="input-group">
+                            <label for="income-date">Date</label>
+                            <input type="date" id="income-date">
+                        </div>
+                        <div class="input-group btn-group-align">
+                            <button type="submit" class="btn success-btn" id="btn-add-income">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                Record Income
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="rule-tracker card glass-card">
+                    <div class="tracker-header">
+                        <h3>60/40 Rule Tracker</h3>
+                        <span id="spend-percentage">0% spent</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div id="spend-progress" class="progress-bar"></div>
+                    </div>
+                    <div class="tracker-details">
+                        <p>Spend Limit (60%): <strong id="spend-limit">₹0.00</strong></p>
+                        <p>Savings Goal (40%): <strong id="savings-goal">₹0.00</strong></p>
+                    </div>
+                    <div id="alert-container" class="alert hidden">
+                        <!-- Warning alerts will be injected here -->
+                    </div>
+                </div>
+
+                <div class="action-section">
+                    <div class="card glass-card form-card">
+                        <h3>Add Expense / Transaction</h3>
+                        <form id="transaction-form">
+                            <div class="input-group">
+                                <label for="tx-type">Type</label>
+                                <select id="tx-type" required>
+                                    <option value="EXPENSE" selected>Expense</option>
+                                    <option value="INCOME">Income</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="tx-amount">Amount (₹)</label>
+                                <input type="number" id="tx-amount" min="1" step="0.01" required placeholder="Enter amount">
+                            </div>
+                            <div class="input-group">
+                                <label for="tx-category">Category / Description</label>
+                                <input type="text" id="tx-category" required placeholder="e.g. Food, Groceries, Rent">
+                            </div>
+                            <div class="input-group">
+                                <label for="tx-date">Date</label>
+                                <input type="date" id="tx-date">
+                            </div>
+                            <button type="submit" class="btn primary-btn">Add Transaction</button>
+                        </form>
+                    </div>
+
+                    <div class="card glass-card list-card">
+                        <div class="list-card-header">
+                            <h3>Recent Transactions</h3>
+                            <span class="count-badge" id="tx-count">0 items</span>
+                        </div>
+                        <div class="transaction-list" id="transaction-list">
+                            <!-- Transactions will appear here -->
+                            <div class="empty-state">No transactions yet</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ledger View -->
+            <section id="ledger" class="view hidden-view">
+                <header class="view-header">
+                    <h2>Borrow & Lend Ledger</h2>
+                    <p class="subtitle">Track money you gave to or got from others.</p>
+                </header>
+                
+                <div class="action-section">
+                    <div class="card glass-card form-card">
+                        <h3>New Entry</h3>
+                        <form id="ledger-form">
+                            <div class="input-group">
+                                <label for="ledger-type">Type</label>
+                                <select id="ledger-type" required>
+                                    <option value="GAVE">I Gave (They owe me)</option>
+                                    <option value="GOT">I Got (I owe them)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="ledger-contact">Contact Name</label>
+                                <input type="text" id="ledger-contact" required placeholder="Enter name">
+                            </div>
+                            <div class="input-group">
+                                <label for="ledger-amount">Amount (₹)</label>
+                                <input type="number" id="ledger-amount" min="1" step="0.01" required placeholder="Enter amount">
+                            </div>
+                            <button type="submit" class="btn primary-btn">Add Entry</button>
+                        </form>
+                    </div>
+
+                    <div class="card glass-card list-card">
+                        <div class="list-card-header">
+                            <h3>Active Contacts</h3>
+                            <span class="count-badge" id="contact-count">0 active</span>
+                        </div>
+                        <div class="contact-list" id="contact-list">
+                            <!-- Contacts will appear here -->
+                            <div class="empty-state">No active debts</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Edit Transaction Modal -->
+    <div id="edit-tx-modal" class="modal-backdrop hidden">
+        <div class="modal card glass-card">
+            <div class="modal-header">
+                <h3>Edit Transaction</h3>
+                <button type="button" class="close-modal-btn" id="close-tx-modal">&times;</button>
+            </div>
+            <form id="edit-tx-form">
+                <input type="hidden" id="edit-tx-id">
+                <div class="input-group">
+                    <label for="edit-tx-type">Type</label>
+                    <select id="edit-tx-type" required>
+                        <option value="EXPENSE">Expense</option>
+                        <option value="INCOME">Income</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="edit-tx-amount">Amount (₹)</label>
+                    <input type="number" id="edit-tx-amount" min="1" step="0.01" required>
+                </div>
+                <div class="input-group">
+                    <label for="edit-tx-category">Category / Description</label>
+                    <input type="text" id="edit-tx-category" required>
+                </div>
+                <div class="input-group">
+                    <label for="edit-tx-date">Date</label>
+                    <input type="date" id="edit-tx-date" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn secondary-btn" id="cancel-edit-tx">Cancel</button>
+                    <button type="submit" class="btn primary-btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Contact Modal -->
+    <div id="edit-contact-modal" class="modal-backdrop hidden">
+        <div class="modal card glass-card">
+            <div class="modal-header">
+                <h3>Edit Active Contact</h3>
+                <button type="button" class="close-modal-btn" id="close-contact-modal">&times;</button>
+            </div>
+            <form id="edit-contact-form">
+                <input type="hidden" id="edit-original-contact-name">
+                <div class="input-group">
+                    <label for="edit-contact-name">Contact Name</label>
+                    <input type="text" id="edit-contact-name" required placeholder="Enter new contact name">
+                    <small class="field-hint">Renaming updates all associated ledger entries for this contact.</small>
+                </div>
+                <div class="contact-entries-preview">
+                    <h4>Associated Entries</h4>
+                    <div id="edit-contact-entries-list" class="entries-mini-list"></div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn danger-btn-outline" id="settle-all-contact-btn">Settle All Debts</button>
+                    <button type="button" class="btn secondary-btn" id="cancel-edit-contact">Cancel</button>
+                    <button type="submit" class="btn primary-btn">Save Contact</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
